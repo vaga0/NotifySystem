@@ -25,6 +25,8 @@ Server will listen on port 4000
 
 Edit ```.env``` file and set follows, and set SERVER_HOST and SERVER_PORT to yours
 
+> CLIENT_ID represents a unique identity.
+
 ```txt
 # Client Config
 ClIENT_ID=Geust01
