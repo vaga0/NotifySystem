@@ -8,9 +8,9 @@ This is an MVP-based project. For full-feature development, please contact me.
 
 Nodejs version: 20+
 
-Server: Linux or windows
+Server: Linux or Windows
 
-Client: windows Only
+Client: Linux or Windows better
 
 ## Install
 
