@@ -25,6 +25,8 @@ node server.js
 
 Server will listen on port 4000
 
+![](document/4.%20run-server.png)
+
 ### Client
 
 Edit ```.env``` file and set follows, and set SERVER_HOST and SERVER_PORT to yours
@@ -49,7 +51,7 @@ cd notify_client
 npm install
 node server.js
 ```
-Server will listen on port 3000
+Client will listen on port 3000
 
 ## Server
 
