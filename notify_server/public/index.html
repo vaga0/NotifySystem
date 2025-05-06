@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Client 訊息發送</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f7f7f7;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #messageInput {
+      width: 96%;
+      height: 5.6em;
+      padding: 8px;
+      line-height: 1.4;
+      resize: none;
+      overflow-y: auto;
+    }
+
+    #charCount {
+      bottom: 4px;
+      right: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    #status {
+      margin-top: 15px;
+      text-align: center;
+      color: green;
+    }
+
+    /* 登出按鈕樣式 */
+    #logoutBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: fit-content;
+    }
+
+    #logoutBtn:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <button id="logoutBtn">登出</button>
+  
+  <h2>發送訊息至 Client</h2>
+
+  <label for="userSelect">選擇在線使用者</label>
+  <select id="userSelect"></select>
+
+  <label for="messageInput">訊息內容</label>
+  <textarea id="messageInput" placeholder="輸入訊息" maxlength="60"></textarea>
+  <div id="charCount">
+    0 / 60
+  </div>
+
+  <button onclick="sendMessage()">發送</button>
+  <p id="status"></p>
+
+  <script>
+    const textarea = document.getElementById('messageInput');
+    const counter = document.getElementById('charCount');
+
+    textarea.addEventListener('input', () => {
+      const lines = textarea.value.split('\n');
+      if (lines.length > 4) {
+        textarea.value = lines.slice(0, 4).join('\n');
+      }
+
+      const length = textarea.value.length;
+      counter.textContent = `${length} / 60`;
+    });
+
+    async function loadUsers() {
+      const res = await fetch('/users');
+      const data = await res.json();
+      const select = document.getElementById('userSelect');
+      select.innerHTML = ''; // 清空現有選項
+
+      // 增加「全部使用者」選項
+      const allOption = document.createElement('option');
+      allOption.value = '__ALL__';
+      allOption.textContent = '全部使用者';
+      select.insertBefore(allOption, select.firstChild);
+
+      data.users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user;
+        option.textContent = user.split('@')[0];
+        select.appendChild(option);
+      });
+    }
+
+    async function sendMessage() {
+      const clientId = document.getElementById('userSelect').value;
+      const message = document.getElementById('messageInput').value;
+      const status = document.getElementById('status');
+      status.textContent = '';
+
+      if (!message.trim()) {
+        status.textContent = '請輸入訊息';
+        status.style.color = 'red';
+        return;
+      }
+
+      try {
+        const res = await fetch('/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clientId, message })
+        });
+        const result = await res.json();
+        status.textContent = result.message;
+        status.style.color = res.ok ? 'green' : 'red';
+      } catch (err) {
+        status.textContent = '傳送過程發生錯誤';
+        status.style.color = 'red';
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/web/logout', { method: 'POST' });
+      window.location.href = '/web/login.html';  // 登出後跳轉到登入頁
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>
