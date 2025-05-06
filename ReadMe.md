@@ -55,8 +55,14 @@ Server will listen on port 3000
 
 The server provides a web interface that allows sending messages to specific clients or all connected clients.
 
+![](document/1.%20connect.png)
+
 Default login credentials are admin/admin.
+
+![](document/0.%20login.png)
 
 ## Client
 
 When a message is receiverd, a pop-up notification will appear.
+
+![](document/2.%20popup-message.png)
