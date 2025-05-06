@@ -1,3 +1,7 @@
+# About Project
+
+This is an MVP-based project. For full-feature development, please contact me.
+
 # How Install
 
 ## Environment
